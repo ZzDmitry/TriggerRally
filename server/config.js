@@ -1,3 +1,6 @@
+const _ = require('lodash');
+
+
 let localConfig;
 
 try {
@@ -16,4 +19,4 @@ const defaultConfig = {
   }
 };
 
-module.exports = Object.assign(defaultConfig, localConfig);
+module.exports = _.merge(defaultConfig, localConfig);
