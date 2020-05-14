@@ -54,9 +54,11 @@ mongoose.connection.on("error", function(err) {
   return log(err.message);
 });
 
+mongoose.connect(config.MONGOOSE_URL);
+
 const SessionStore = session_mongoose(connect);
 const sessionStore = new SessionStore({
-  url: `mongodb://${config.MONGODB_HOST}/sessions`,
+  connection: mongoose.connection,
   // Expiration check worker run interval in millisec (default: 60000)
   interval: 120000
 });
@@ -66,8 +68,6 @@ const UserPassport = mongoose.model('UserPassport');
 const Car = mongoose.model('Car');
 const Track = mongoose.model('Track');
 const Run = mongoose.model('Run');
-
-mongoose.connect(config.MONGOOSE_URL);
 
 // Alternate DB connection
 const dbUrl = `${config.db.host}:${config.db.port}/${config.db.name}?auto_reconnect`;
