@@ -1,3 +1,9 @@
+let localConfig;
+
+try {
+  localConfig = require('./config.local.js');
+} catch(e) {}
+
 module.exports = {
   MONGODB_HOST: 'mongodb://localhost:27017/triggered',
   MONGOOSE_URL: 'mongodb://localhost:27017/triggered',
@@ -6,5 +12,6 @@ module.exports = {
     host: 'localhost',
     port: 27017,
     name: 'triggered'
-  }
+  },
+  ...localConfig,
 };
