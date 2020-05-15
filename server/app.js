@@ -182,21 +182,23 @@ app.use(stylus.middleware({
 })
 );
 
-app.use((req, res, next) => {
-  const pathname = req._parsedUrl.pathname;
-  if (pathname !== '/' && pathname !== '/index.html') {
-    return next();
-  }
-  fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, html) => {
-    if (err) {
-      console.error(`index.html read error: ${err}`);
-      res.send(500);
-      return;
+if (config.baseHref) {
+  app.use((req, res, next) => {
+    const pathname = req._parsedUrl.pathname;
+    if (pathname !== '/' && pathname !== '/index.html') {
+      return next();
     }
-    const htmlWithBase = html.replace('<head>', `<head><base href="/104/58080_/">`);
-    res.send(htmlWithBase);
+    fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, html) => {
+      if (err) {
+        console.error(`index.html read error: ${err}`);
+        res.send(500);
+        return;
+      }
+      const htmlWithBase = html.replace('<head>', `<head><base href="${config.baseHref}">`);
+      res.send(htmlWithBase);
+    });
   });
-});
+}
 
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');

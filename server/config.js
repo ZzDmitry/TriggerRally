@@ -16,7 +16,8 @@ const defaultConfig = {
     host: 'localhost',
     port: 27017,
     name: 'triggered'
-  }
+  },
+  baseHref: null,
 };
 
 module.exports = _.merge(defaultConfig, localConfig);
