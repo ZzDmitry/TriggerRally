@@ -8,6 +8,8 @@
 "use strict";
 
 let id, pack;
+const fs                = require('fs');
+const path              = require('path');
 const _                 = require('underscore');
 const bodyParser        = require('body-parser');
 const cookieParser      = require('cookie-parser');
@@ -171,7 +173,6 @@ passport.deserializeUser((id, done) =>
     .populate('user')
     .exec((error, userPassport) => done(error, userPassport))
 );
-
 app.use(logger('[:isodate] :status :response-time ms :res[content-length] :method :url :referrer', {format: '[:isodate] :status :response-time ms :res[content-length] :method :url :referrer'}));
 app.disable('x-powered-by');
 app.use(compression());
@@ -180,6 +181,23 @@ app.use(stylus.middleware({
   dest: __dirname + '/public'
 })
 );
+
+app.use((req, res, next) => {
+  const pathname = req._parsedUrl.pathname;
+  if (pathname !== '/' && pathname !== '/index.html') {
+    return next();
+  }
+  fs.readFile(path.join(__dirname, 'public', 'index.html'), 'utf-8', (err, html) => {
+    if (err) {
+      console.error(`index.html read error: ${err}`);
+      res.send(500);
+      return;
+    }
+    const htmlWithBase = html.replace('<head>', `<head><base href="/104/58080_/">`);
+    res.send(htmlWithBase);
+  });
+});
+
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
